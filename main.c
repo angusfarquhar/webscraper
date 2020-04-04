@@ -14,86 +14,46 @@
 #include <netdb.h>
 #include <unistd.h>
 
+char *get_request(char *url);
+char *parse_url(char *url);
+char *get_links(char *response);
+
 int main(int argc, char ** argv)
 {
-    int sockfd, portno, n;
-    struct sockaddr_in serv_addr;
-    struct hostent *server;
-    char buffer[256];
-
+    printf("\n\n................. START PROGRAM .........................\n\n");
     if (argc < 2)
     {
         fprintf(stderr, "error: no url entered!\n");
         exit(0);
     }
+    char *url = argv[1];
+    printf("\nurl put into the CLI : %s\n", url);
+    url = parse_url(url);
+    printf("\nurl after parsing : %s\n", url);
 
-    portno = atoi("80");
+    char *response = get_request(url);
 
+    printf("............. END RESPONSE .............\n\n%s\n\n", response);
 
-    /* Translate host name into peer's IP address ;
-     * This is name translation service by the operating system
-     */
-    server = gethostbyname(argv[1]);
-    printf("argv: %s\nserver: %s\n", argv[1], server->h_addr_list[0]);
-
-    if (server == NULL)
-    {
-        fprintf(stderr, "ERROR, no such host\n");
-        exit(0);
-    }
-
-    /* Building data structures for socket */
-
-    bzero((char *)&serv_addr, sizeof(serv_addr));
-
-    serv_addr.sin_family = AF_INET;
-
-    bcopy(server->h_addr_list[0], (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-
-    serv_addr.sin_port = htons(portno);
-
-    /* Create TCP socket -- active open
-    * Preliminary steps: Setup: creation of active open socket
-    */
-
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (sockfd < 0)
-    {
-        perror("ERROR opening socket");
-        exit(0);
-    }
-
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        perror("ERROR connecting");
-        exit(0);
-    }
-
-    /* Do processing
-    */
+    get_links(response);
     
-    sprintf(buffer, "GET / HTTP/1.1\nHost: %s:%d\nAccept: */*\nAccept-Encoding: gzip\nProxy-Connection: Keep-Alive\nUser-Agent: joeb\r\n\r\n", argv[1], portno);
 
-    n = write(sockfd, buffer, strlen(buffer));
-
-    if (n < 0)
-    {
-        perror("ERROR writing to socket");
-        exit(0);
-    }
-
-    bzero(buffer, 256);
-
-    n = read(sockfd, buffer, 255);
-
-    if (n < 0)
-    {
-        perror("ERROR reading from socket");
-        exit(0);
-    }
-
-    printf("%s\n", buffer);
-
+    printf("\n\n................. END PROGRAM .........................\n\n");
     return 0;
+}
+
+char *parse_url(char *url) 
+{
+    if (strstr(url, "http://")) {
+        url = url+ 7;
+        printf("\nPARSED url in function: %s\n", url);
+    }
+    if (strstr(url, "https://")) {
+        url = url+ 8;
+        printf("\nPARSED url in function: %s\n", url);
+    }
+
+    printf("\nURL IS FINE!!\n");
+    return url;
+    
 }

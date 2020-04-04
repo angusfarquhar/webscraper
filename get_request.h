@@ -1,0 +1,1 @@
+int *get_request(char *url, char *request);
