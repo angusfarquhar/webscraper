@@ -13,10 +13,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-
-char *get_request(char *url);
-char *parse_url(char *url);
-char *get_links(char *response);
+#include "get_request.h"
+#include "get_links.h"
+#include "url.h"
 
 int main(int argc, char ** argv)
 {
@@ -37,25 +36,15 @@ int main(int argc, char ** argv)
 
     printf("............. START PARSING LINKS .............\n\n%s\n\n", response);
 
-    get_links(response);
+    char **link_array = get_links(response);
+
+    for (int i = 0; i <100; i++) {
+        printf("--> this is the link in link array[%d] : %s\n\n",i, link_array[i]);
+    }
     
 
     printf("\n\n................. END PROGRAM .........................\n\n");
     return 0;
 }
 
-char *parse_url(char *url) 
-{
-    if (strstr(url, "http://")) {
-        url = url+ 7;
-        printf("\nPARSED url in function: %s\n", url);
-    }
-    if (strstr(url, "https://")) {
-        url = url+ 8;
-        printf("\nPARSED url in function: %s\n", url);
-    }
 
-    printf("\nURL IS FINE!!\n");
-    return url;
-    
-}

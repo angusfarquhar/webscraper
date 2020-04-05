@@ -5,7 +5,7 @@
    To run: start the server, then the client */
 
 
-   // TO DO: - parse the url, sort out buffer, 
+   // TO DO: - parse the address, sort out buffer, 
             
 
 #include <stdio.h>
@@ -18,13 +18,13 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <assert.h>
-#include "status.h"
+#include "url.h"
 
 #define PORTNO 80
 #define MAXBYTES 100000
 #define BUFFER 256
 
-char *get_request(char *url)
+char *get_request(char *address)
 {
     int sockfd, n;
     struct sockaddr_in serv_addr;
@@ -36,9 +36,10 @@ char *get_request(char *url)
      * This is name translation service by the operating system
      */
     printf("HERE yeah\n\n");
-    
-    server = gethostbyname(url);
-    //printf("argv: %s\n\nserver: %s\n\n", argv[1], server->h_addr_list[0]);
+    Url url = make_url(address);
+    printf("make_url done : url.host = %s\n\n", url.host);
+    server = gethostbyname(url.host);
+    printf("\n\nserver: %s\n\n", url.host);
     printf("HERE 2\n\n");
     if (server == NULL)
     {
@@ -77,8 +78,8 @@ char *get_request(char *url)
     /* Do processing
     */
     
-    sprintf(buffer, "GET / HTTP/1.1\nHost: %s:%d\nUser-Agent: afarquhar\nConnection: close\r\n\r\n", url, PORTNO);
-
+    sprintf(buffer, "GET /%s HTTP/1.1\nHost: %s:%d\nUser-Agent: afarquhar\nConnection: close\r\n\r\n", url.path, url.host, PORTNO);
+    printf("MAKING GET REQUEST... [GET /%s HTTP/1.1\nHost: %s:%d\nUser-Agent: afarquhar\nConnection: close]", url.path, url.host, PORTNO);
     n = write(sockfd, buffer, strlen(buffer));
 
     response = (char *)malloc(sizeof(char) * MAXBYTES);

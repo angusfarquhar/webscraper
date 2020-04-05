@@ -1,1 +1,1 @@
-int *get_request(char *url, char *request);
+char *get_request(char *address);

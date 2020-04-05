@@ -4,49 +4,62 @@
 #include <assert.h>
 
 #define A_HREF 9
+#define MAX_URLS 100
+#define MAX_LENGTH 1000
 
-int get_links(char *response) {
+char **get_links(char *response) {
+    int i=0, j=0, k=0;
     char *tag = NULL;
-    char* link;
-    
+    char *link = NULL;
 
-    tag = strstr(response, "<a href=");
-    printf("\n..................... TESTING LINKS .......................\n");
-    printf("link[0] : %c \n" ,tag[0]);
-    
-    tag = tag + A_HREF;
+    char **link_array = malloc(sizeof *link_array * MAX_URLS);
+    assert(link_array);
 
-    link = (char *)malloc(sizeof(char) * 256);
-    assert(link);
-
-    //parse html tag until you get to the end of the link, adding it to link array
-    int i = 0;
-    while (tag[i] != '"') {
-         link[i] = tag[i];
-         printf("link : %c\n", link[i]);
-         i++;
-     }
-
-     // add null byte to array to make string
-     link[i] = '\0';
-
-     printf("complete link!! : %s", link);
-     printf("strlen(tag) : %lu\n\nstrlen(link) : %lu", strlen(tag), strlen(link));
-
-    if (strlen(tag) > strlen(link) ) {
-        
-        printf("\n..................... NEW TAG .......................\n");
-        //move tag forward by length of string
-        printf("\n%s\n", tag + strlen(link));
-        printf("\n..................... END OF NEW TAG .......................\n");
-        return get_links(tag);
-
-    } else {
-        printf("\n NO LINK FOUND :( \n");    
+    if (link_array) {
+        for (i = 0; i < MAX_URLS; i++) {
+            link_array[i] = malloc(sizeof *link_array[i] * MAX_LENGTH);
+        }
     }
+    
+    printf("\n..................... TESTING GET_LINKS .......................\n");
+    tag = strstr(response, "<a href=");
+    j=0;
+    while (strstr(tag, "<a href=")) {
+        printf("\n..................... START OF WHILE(TAG) .......................\n");
+        
 
-    printf("\n..................... END OF LINKS .......................\n");
-    return 0;
+    
+        //printf("link[0] : %c \n" ,tag[0]);
+        printf("tag = %s\n\n\n\n",tag);
+        tag = tag + A_HREF;
+
+        link = (char *)malloc(sizeof(char) * 256);
+        assert(link);
+
+        //parse html tag until you get to the end of the link, adding it to link array
+        k=0; 
+        while (tag[k] != '"') {
+            link[k] = tag[k];
+            k++;
+        }
+        // add null byte to array to make string
+        link[k] = '\0';
+        printf("link= %s\n\n\n\n",link);
+
+        strcpy(link_array[j], link);
+        j++;
+        printf("value for i is : %d", j);
+        tag = tag +A_HREF;
+        tag = strstr(tag, "<a href=");
+        if (tag == NULL) {
+            break;
+        }
+        
+    
+    
+    } 
+    printf("\n..................... END OF GET_LINKS .......................\n");
+    return link_array; 
 
 }
 
