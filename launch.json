@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/client.o", // Path to your executable, DONT INCLUDE ARGS
+            "args": ["google.com"], // Arguments here as strings, seperated: ["arg1", "arg2"]
+            "cwd": "${workspaceFolder}",
+            "MIMode": "lldb",
+    }
+    ]
+}

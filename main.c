@@ -35,6 +35,8 @@ int main(int argc, char ** argv)
 
     printf("............. END RESPONSE .............\n\n%s\n\n", response);
 
+    printf("............. START PARSING LINKS .............\n\n%s\n\n", response);
+
     get_links(response);
     
 
